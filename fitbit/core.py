@@ -1,32 +1,119 @@
 import fitbit
 import urllib.request, urllib.parse, urllib.error
+import urllib3
 import requests
 import json
 import ssl
 import oauthlib
-
-redirect_uri = 'http://127.0.0.1:8080/'
-# 'http%3A%2F%2F127.0.0.1%3A8080%2F'
-fitbit_url = 'www.fitbit.com'
+import http.client
+from requests_oauthlib import OAuth2Session
+import base64
+# FITBIT URLs
+fit_redirect_uri = 'http://127.0.0.1:8080/'
+fitbit_url = 'https://www.fitbit.com'
 fitbit_api_url = 'api.fitbit.com'
+url1 = 'https://www.fitbit.com/oauth2/authorize?'
+fit_token_url = 'https://www.fitbit.com/oauth2/token'
 
+# APPLICATION DETAILS
 # OAuth 2.0 Client ID - Identify the application
 CLIENT_ID = '22BR7W'
-
 # Client Secret - Secret key which is stored on server side securely & not available to public
-CLIENT_SECRET = 'aaf2c1c4ec24d6c8e732beb79cc3def7'
+CLIENT_SECRET = '9b3bea71b238d080962c589d6134fe51'
+base64_code = base64.b64encode(bytes((CLIENT_ID+":"+CLIENT_SECRET),'utf-8'))
+print(base64_code)
 responsetype = 'token'
 expirytime_ms = '604800' 
+fit_scope = ['heartrate']
+# auth_url = url1+'?response_type='+responsetype+'&client_id='+CLIENT_ID+'&redirect_uri='+fit_redirect_uri+'&scope=heartrate'+'&expires_in='+expirytime_ms
 
-# Ignore SSL certificate errors
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
+fitbit = OAuth2Session(client_id=CLIENT_ID, redirect_uri=fit_redirect_uri, scope=fit_scope)
+authorisation_url, state = fitbit.authorization_url(url1)
+print('Please go to %s and authorize access.' %authorisation_url)
+authorisation_response = input('Enter callback response: ')
+print(authorisation_response)
 
-# Defining a client
-auth_url = fitbit_url+'/oauth2/authorize?'+'response_type='+responsetype+'&client_id='+CLIENT_ID+'&redirect_uri='+redirect_uri+'&scope=heartrate'+'&expires_in='+expirytime_ms
-print(auth_url)
-c = urllib.request.urlopen(auth_url)
+token = fitbit.fetch_token( token_url=fit_token_url, 
+                            authorization_response=authorisation_response, 
+                            include_client_id=CLIENT_ID,
+                            client_secret=CLIENT_SECRET, 
+                            body=' application/x-www-form-urlencoded')
+
+# ACCESS TOKEN
+# token = fitbit.fetch_token(token_url=fit_token_url, authorization_response=authorisation_response, 
+#                             include_client_id=CLIENT_ID, client_secret=CLIENT_SECRET, 
+#                             state=state, code_challenge_method='S256', responsetype='token', method='POST')
+
+# token = fitbit.fetch_token( token_url=fit_token_url, 
+#                             authorization_response=authorisation_response, 
+#                             include_client_id=CLIENT_ID,
+#                             client_secret=CLIENT_SECRET, 
+#                             username='', 
+#                             password='',
+#                             body=' application/x-www-form-urlencoded')
+
+# RESPONSE
+# r = fitbit.get('https://api.fitbit.com/1/user/-/profile.json')
+
+
+# # Ignore SSL certificate errors
+# ctx = ssl.create_default_context()
+# ctx.check_hostname = False
+# ctx.verify_mode = ssl.CERT_NONE
+
+
+
+
+
+
+
+# # Defining a client
+# client = WebApplicationClient(CLIENT_ID)
+# client.prepare_request_uri(url1, redirect_uri=fit_redirect_uri,scope='heartrate', state=None,)
+
+# print(auth_url)
+
+# req = requests.Request('POST',auth_url)
+# prepared = req.prepare()
+
+# #Send and print response
+# s = requests.Session()
+# response = s.send(prepared)
+# print("Response from fitbit: " + str(response))
+
+# Making a REST Call
+# response = requests.get(auth_url)
+# # print(response.status_code)
+# # print(response.text)
+# # print(response.url)
+# print(response.url)
+
+# Authorisation
+# http://127.0.0.1:8080/#access_token=eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyMkJSN1ciLCJzdWIiOiI1SFlCNjIiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyaHIiLCJleHAiOjE1OTA0Mjc1OTAsImlhdCI6MTU4OTk4NzQzM30.yZw9-F0BXg-l63eBxfQQA3jnxNDL5_l9zDDLeK6PLn0&user_id=5HYB62&scope=heartrate&token_type=Bearer&expires_in=440157
+
+
+
+
+
+# try:
+#     # contents = urllib.request.urlopen(auth_url, context=ctx).read()
+#     # print(contents)
+#     # resp = urllib3.Request(auth_url)
+    
+# except urllib.error.URLError as e:
+#     # response = http.request('GET', auth_url)
+#     # print(response.data)
+#     # print(response.data.decode('utf-8')) # Text.
+
+
+
+
+
+
+
+# print(c.geturl())
+# myfile = c.read()
+# print(myfile)
 
 # try:
 #     js = json.loads(data)
