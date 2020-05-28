@@ -73,3 +73,11 @@ except urllib.error.HTTPError as e:
     print(e.msg)
     print(e.reason)
     print(e.headers)
+
+# Reading Access Token
+fit_access_token = js_response['access_token']
+# Reading Refresh Token
+fit_refresh_token = js_response['refresh_token']
+
+# POST A API Call - HeartRate data
+# 
