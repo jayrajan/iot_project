@@ -15,7 +15,6 @@ fit_redirect_uri = 'https://127.0.0.1:8080/callback'
 fit_auth_url = 'https://www.fitbit.com/oauth2/authorize?'
 fit_token_url =  'https://api.fitbit.com/oauth2/token'
 fit_api_url = 'https://api.fitbit.com/1/user/5HYB62/activities/heart/date/2020-02-24/1d.json'
-# fit_api_url = 'https://api.fitbit.com/1/user/'+fit_username+'/profile.json'
 
 # APPLICATION DETAILS
 # OAuth 2.0 Client ID - Identify the application
@@ -97,14 +96,3 @@ except urllib.error.HTTPError as e:
     print('HTTP ERROR CODE:',e.code)
     print(e.msg)
     print(e.reason)
-    # print(e.headers)
-
-
-
-
-
-
-
-# api_header = {'Authorisation': 'Bearer '+fit_access_token}
-# api_response = requests.get(fit_api_url, headers=api_header)
-# print(api_response.content)
