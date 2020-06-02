@@ -9,10 +9,13 @@ from requests_oauthlib import OAuth2Session
 import base64
 import re
 
-# FITBIT URLs
+# FITBIT CREDENTIALS/URLs
+fit_username = 'Jay'
 fit_redirect_uri = 'https://127.0.0.1:8080/callback'
 fit_auth_url = 'https://www.fitbit.com/oauth2/authorize?'
 fit_token_url =  'https://api.fitbit.com/oauth2/token'
+fit_api_url = 'https://api.fitbit.com/1/user/5HYB62/activities/heart/date/2020-02-24/1d.json'
+# fit_api_url = 'https://api.fitbit.com/1/user/'+fit_username+'/profile.json'
 
 # APPLICATION DETAILS
 # OAuth 2.0 Client ID - Identify the application
@@ -60,7 +63,7 @@ req = urllib.request.Request(fit_token_url,data=dataURLencoded, method='POST')
 req.add_header('Authorization', 'Basic '+base64_code_str)
 req.add_header('Content-Type', 'application/x-www-form-urlencoded')
 
-# POST TOKEN Request
+# POST ACCESS & REFRESH TOKEN Request
 try:
     response = urllib.request.urlopen(req)
     FullResponse = response.read()
@@ -79,5 +82,29 @@ fit_access_token = js_response['access_token']
 # Reading Refresh Token
 fit_refresh_token = js_response['refresh_token']
 
-# POST A API Call - HeartRate data
-# 
+# API CALL
+# POST a API Call Request - HeartRate data
+api_req = urllib.request.Request(fit_api_url, method='GET')
+api_req.add_header('Authorization','Bearer ' + fit_access_token)
+
+try:
+    api_response = urllib.request.urlopen(api_req)
+    api_response_read = api_response.read()
+    api_response_json = json.loads(api_response_read)
+    print('Response:',json.dumps(api_response_json,indent=4))
+
+except urllib.error.HTTPError as e:
+    print('HTTP ERROR CODE:',e.code)
+    print(e.msg)
+    print(e.reason)
+    # print(e.headers)
+
+
+
+
+
+
+
+# api_header = {'Authorisation': 'Bearer '+fit_access_token}
+# api_response = requests.get(fit_api_url, headers=api_header)
+# print(api_response.content)
