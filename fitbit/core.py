@@ -14,7 +14,6 @@ fit_username = 'Jay'
 fit_redirect_uri = 'https://127.0.0.1:8080/callback'
 fit_auth_url = 'https://www.fitbit.com/oauth2/authorize?'
 fit_token_url =  'https://api.fitbit.com/oauth2/token'
-fit_api_url = 'https://api.fitbit.com/1/user/5HYB62/activities/heart/date/2020-02-24/1d.json'
 
 # APPLICATION DETAILS
 # OAuth 2.0 Client ID - Identify the application
@@ -66,10 +65,13 @@ req.add_header('Content-Type', 'application/x-www-form-urlencoded')
 try:
     response = urllib.request.urlopen(req)
     FullResponse = response.read()
-    # Printing response in JSON format
+    
+    # Capture response in JSON format
     js_response = json.loads(FullResponse)
+    # Print the JSON response
     print('Response:',json.dumps(js_response,indent=4))
 
+# HTTP Error Handling
 except urllib.error.HTTPError as e:
     print('HTTP ERROR CODE:',e.code)
     print(e.msg)
@@ -80,19 +82,36 @@ except urllib.error.HTTPError as e:
 fit_access_token = js_response['access_token']
 # Reading Refresh Token
 fit_refresh_token = js_response['refresh_token']
+# Reading User ID
+user_id = js_response['user_id']
+
+# Input from user for getting the data - date, datapoints, start-time, end-time for API URL
+date = input('Enter Date for which you want the hearrate data in format yyyy-MM-dd \n')
+detail_level = input('Enter number of data points to include, Either 1sec or 1min \n')
+start_time = input ('Enter start of the period in the format HH:mm \n')
+end_time = input('Enter end of the period in the format HH:mm \n')
+
+# API URL
+fit_api_url = 'https://api.fitbit.com/1/user/'+user_id+'/activities/heart/date/'+date+'/1d/'+detail_level+'/time/'+start_time+'/'+end_time+'.json'
 
 # API CALL
-# POST a API Call Request - HeartRate data
+# GET API Call Request - HeartRate data
 api_req = urllib.request.Request(fit_api_url, method='GET')
+# Authorisation Header
 api_req.add_header('Authorization','Bearer ' + fit_access_token)
 
+# Make a GET request to the Fitbit API for heartrate data
 try:
     api_response = urllib.request.urlopen(api_req)
     api_response_read = api_response.read()
+    # Get Response in JSON format
     api_response_json = json.loads(api_response_read)
+    # Print out JSON response of Heart Rate data
     print('Response:',json.dumps(api_response_json,indent=4))
 
+# HTTP Error Handling
 except urllib.error.HTTPError as e:
     print('HTTP ERROR CODE:',e.code)
     print(e.msg)
     print(e.reason)
+
