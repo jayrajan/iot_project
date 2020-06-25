@@ -89,5 +89,8 @@ api_req = urllib.request.Request(fit_api_url, method='GET')
 api_req.add_header('Authorization','Bearer ' + fit_access_token)
 
 api_response = getresponse(api_req)
-print('Response:',json.dumps(api_response,indent=4))
+# print('Response:',json.dumps(api_response,indent=4))
 
+# extracting the heartrate & timestamp data
+my_hr_data = api_response['activities-heart-intraday']['dataset']
+print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',my_hr_data)
