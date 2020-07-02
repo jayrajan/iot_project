@@ -3,6 +3,7 @@
 import re
 import json
 import base64
+import pandas as pd
 import urllib.request
 from urllib.parse import urlencode
 from apifunction import getresponse
@@ -93,4 +94,9 @@ api_response = getresponse(api_req)
 
 # extracting the heartrate & timestamp data
 my_hr_data = api_response['activities-heart-intraday']['dataset']
-print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',my_hr_data)
+# print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',my_hr_data)
+
+# convert into a pandas dataframe
+df = pd.DataFrame(data=my_hr_data)
+print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',df)
+
