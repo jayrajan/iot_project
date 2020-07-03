@@ -1,10 +1,16 @@
-# Code written by Jerin Rajan 
+'''
+Code written by Jerin Rajan on 09th May 2020
+Project title: IoT project (Fitbit) 
+The code allows configuring the Fitbit API to read fitness related data and present the data using graphical plots
+Note: apifunction() should be included in same directory as this code
+'''
 
 import re
 import json
 import base64
 import pandas as pd
 import urllib.request
+import matplotlib.pyplot as plt
 from urllib.parse import urlencode
 from apifunction import getresponse
 from requests_oauthlib import OAuth2Session
@@ -96,9 +102,15 @@ api_response = getresponse(api_req)
 my_hr_data = api_response['activities-heart-intraday']['dataset']
 # print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',my_hr_data)
 
-# convert into a pandas dataframe
+# convert into a dataframe
 hr_data_df = pd.DataFrame(data=my_hr_data)
-print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',hr_data_df)
+# print('Jays Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',hr_data_df)
 
 # Plot the data in Python and display it
-
+plt.plot(hr_data_df['time'],hr_data_df['value'])
+plt.grid('on')
+plt.title ('Jays Fitbit Heart Rate data for '+date+' between '+start_time+' & '+end_time)
+plt.xlabel('Time (Hrs)')
+plt.xticks(rotation='vertical', fontsize=8)
+plt.ylabel('Heart Rate (Bpm)')
+plt.show()
