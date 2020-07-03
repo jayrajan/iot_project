@@ -97,6 +97,8 @@ my_hr_data = api_response['activities-heart-intraday']['dataset']
 # print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',my_hr_data)
 
 # convert into a pandas dataframe
-df = pd.DataFrame(data=my_hr_data)
-print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',df)
+hr_data_df = pd.DataFrame(data=my_hr_data)
+print('My Fitbit Heart Rate data for the day',date,'between the hours',start_time,' - ',end_time,':\n',hr_data_df)
+
+# Plot the data in Python and display it
 
